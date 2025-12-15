@@ -60,7 +60,7 @@ const unlock = async (skillId: string) => {
 
 	return (
 		<div className="max-w-lg mx-auto mt-10">
-			<RPGWindow title="スキルボード">
+			<RPGWindow title="スキルボード(後日実装予定)">
 				<div className="grid grid-cols-4 gap-4 p-4">
 					{skills.map((s) => {
 						const owned = userSkills.find((u) => u.skill_id === s.id);
