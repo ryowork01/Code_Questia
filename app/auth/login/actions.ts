@@ -28,7 +28,7 @@ export async function login(formData: FormData) {
 
 	// ログインエラーの場合
 	if (error) {
-		redirect('/error')    // 「/error」はまだ作っていない。後で作る。
+		redirect('/error')    
 	}
 
 	// ホームのlayoutを再検証

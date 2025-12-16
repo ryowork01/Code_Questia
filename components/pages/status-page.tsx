@@ -2,12 +2,53 @@
 
 import { useGame } from "@/components/game-state"
 import { RPGWindow, RPGButton, RPGBar } from "@/components/rpg-window"
+import React, { useState } from "react"
+import { supabase } from "@/lib/supabase"
 
 
 
 export function StatusPage() {
   const { gameState, setPage, setMessage } = useGame()
   const { character } = gameState
+  const [nameInput, setNameInput] = useState(character.name);
+  const [saving, setSaving] = useState(false);
+
+  const updatePlayerName = async (newName: string) => {
+    if (!newName || newName.length > 10) {
+      setMessage("なまえは 10もじ いないに してね。");
+      return;
+    }
+
+    setSaving(true);
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      setMessage("ログイン じょうたいを かくにん できない…");
+      setSaving(false);
+      return;
+    }
+
+    const { error } = await supabase
+      .from("players")
+      .update({ name: newName })
+      .eq("user_id", user.id);
+
+    setSaving(false);
+
+    if (error) {
+      setMessage("なまえの へんこうに しっぱいした…");
+      return;
+    }
+
+    // 🔥 gameState を更新（安全）
+    character.name = newName;
+
+    setMessage(`なまえを「${newName}」に へんこうした！`);
+  };
+
 
   return (
     <div className="max-w-2xl mx-auto space-y-4 p-4 text-cyan-100">
@@ -76,6 +117,38 @@ export function StatusPage() {
           </div>
 
         </div>
+        
+        {/* Name Edit */}
+        <div className="mt-4 space-y-2 border-t border-white/30 pt-3">
+          <div className="text-sm text-cyan-300">なまえを へんこう</div>
+
+          <input
+            className="w-full p-2 bg-black text-cyan-200 border border-cyan-700 dq-font"
+            value={nameInput}
+            onChange={(e) => setNameInput(e.target.value)}
+            disabled={saving}
+          />
+
+          <div className="flex gap-2">
+            <RPGButton
+              disabled={saving}
+              onClick={() => updatePlayerName(nameInput)}
+              className="rpg-menu-item"
+            >
+              ▶ へんこう
+            </RPGButton>
+
+            <RPGButton
+              disabled={saving}
+              onClick={() => updatePlayerName("勇者")}
+              className="rpg-menu-item"
+            >
+              ▶ もとに もどす
+            </RPGButton>
+          </div>
+        </div>
+
+      
       </RPGWindow>
 
       <RPGButton

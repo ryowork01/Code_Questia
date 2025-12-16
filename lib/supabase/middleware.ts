@@ -1,62 +1,36 @@
-import { createServerClient, type CookieOptions } from '@supabase/ssr'
-import { NextResponse, type NextRequest } from 'next/server'
+// middleware.ts
+import { createServerClient } from "@supabase/ssr"
+import { NextResponse } from "next/server"
+import type { NextRequest } from "next/server"
 
-// 期限切れの認証トークンをリフレッシュ
-export async function updateSession(request: NextRequest) {
-	// 初期のレスポンスを設定
+export const config = {
+	matcher: ["/home/:path*"],
+}
+
+export async function middleware(request: NextRequest) {
 	let response = NextResponse.next({
-		request: {
-			headers: request.headers,
-		},
+		request,
 	})
 
-	// Supabaseのサーバークライアントを作成
 	const supabase = createServerClient(
 		process.env.NEXT_PUBLIC_SUPABASE_URL!,
 		process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
 		{
 			cookies: {
-				// クッキーを取得する関数
 				get(name: string) {
 					return request.cookies.get(name)?.value
 				},
-				// クッキーを設定する関数
-				set(name: string, value: string, options: CookieOptions) {
-					// リフレッシュした認証トークンをサーバーコンポーネントに渡す
-					request.cookies.set({
-						name,
-						value,
-						...options,
-					})
-					response = NextResponse.next({
-						request: {
-							headers: request.headers,
-						},
-					})
-					// リフレッシュした認証トークンをブラウザに渡す
+				set(name: string, value: string, options: any) {
 					response.cookies.set({
 						name,
 						value,
 						...options,
 					})
 				},
-				// クッキーを削除する関数
-				remove(name: string, options: CookieOptions) {
-					// リフレッシュした認証トークンをサーバーコンポーネントに渡す
-					request.cookies.set({
-						name,
-						value: '',
-						...options,
-					})
-					response = NextResponse.next({
-						request: {
-							headers: request.headers,
-						},
-					})
-					// リフレッシュした認証トークンをブラウザに渡す
+				remove(name: string, options: any) {
 					response.cookies.set({
 						name,
-						value: '',
+						value: "",
 						...options,
 					})
 				},
@@ -64,9 +38,16 @@ export async function updateSession(request: NextRequest) {
 		}
 	)
 
-	// 現在のユーザーを取得（認証トークンをリフレッシュ）
-	await supabase.auth.getUser()
+	const {
+		data: { session },
+	} = await supabase.auth.getSession()
 
-	// 更新されたレスポンスを返す
+	// 🔒 home はログイン必須
+	if (!session && request.nextUrl.pathname.startsWith("/home")) {
+		return NextResponse.redirect(
+			new URL("/auth/login", request.url)
+		)
+	}
+
 	return response
 }

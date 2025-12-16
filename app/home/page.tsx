@@ -1,7 +1,10 @@
 "use client"
 
-import { GameProvider } from "@/components/game-state"
-import { HomePage } from "@/components/pages/home-page"
+import { GameProvider } from "@/components/game-state";
+import { HomePage } from "@/components/pages/home-page";
+
+console.log("HomePage render");
+
 
 export default function Page() {
   return (
