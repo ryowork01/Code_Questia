@@ -1,7 +1,6 @@
-import { type EmailOtpType } from '@supabase/supabase-js'
+import { createClient, type EmailOtpType } from '@supabase/supabase-js'
 import { type NextRequest, NextResponse } from 'next/server'
-
-import { createClient } from '@/lib/supabase/server'
+import { createServerSupabaseClient } from "@/lib/supabaseServer";
 
 // 確認処理
 export async function GET(request: NextRequest) {
@@ -20,7 +19,7 @@ export async function GET(request: NextRequest) {
 	// token_hashとtypeが存在する場合
 	if (token_hash && type) {
 		// Supabaseクライアントを作成
-		const supabase = createClient()
+		const supabase = await createServerSupabaseClient()
 
 		// ✅OTP（ワンタイムパスワード）を検証
 		const { error } = await supabase.auth.verifyOtp({

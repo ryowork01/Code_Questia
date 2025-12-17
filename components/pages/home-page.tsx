@@ -7,9 +7,11 @@ import { LearnPage } from "./learn-page"
 import { BattlePage } from "./battle-page"
 import { StatusPage } from "./status-page"
 import SkillBoardPage from "@/components/pages/skillboard-page"
-import { supabase } from "@/lib/supabase"
+import { supabase } from "@/lib/supabaseClient"
 import { useRouter } from "next/navigation"
 
+
+//ログアウトボタン設定
 export function LogoutButton() {
   const router = useRouter()
 
