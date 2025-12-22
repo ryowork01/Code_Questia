@@ -5,6 +5,7 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { supabase } from "@/lib/supabaseClient"
+import { RPGWindow, RPGButton } from "@/components/rpg-window"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
@@ -98,9 +99,10 @@ export default function LoginPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            className="w-full px-3 py-2 border rounded"
+            className="w-full px-3 py-2 border rounded" 
           />
         </div>
+        
 
         <button
           type="submit"
@@ -109,6 +111,15 @@ export default function LoginPage() {
         >
           {loading ? "ログイン中..." : "ログイン"}
         </button>
+
+        <RPGButton
+          type="button"
+          onClick={() => router.push("/")}
+          className="w-full bg-gray-500 hover:bg-gray-600 text-white py-2 rounded"
+        >
+          トップページに戻る
+        </RPGButton>
+
       </form>
 
       <p className="mt-4 text-center">

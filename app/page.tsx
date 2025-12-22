@@ -51,11 +51,11 @@ export default function TitlePage() {
               🔐 冒険を再開する（ログイン）
             </RPGButton>
 
-            <RPGButton className="rpg-menu-item" onClick={startAsGuest}>
+            {/* <RPGButton className="rpg-menu-item" onClick={startAsGuest}>
               👤 ゲストとして冒険を始める
-            </RPGButton>
+            </RPGButton> */}  {/* ゲストログインは一時的に非表示 */}
           </div>
-        </RPGWindow>
+        </RPGWindow> 
       </div>
     </div>
   );

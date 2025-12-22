@@ -168,9 +168,34 @@ export function HomePage() {
         </div>
       </RPGWindow>
 
+      
+      <RPGWindow title="メッセージ">
+        <p
+          className="text-sm text-yellow-300 min-h-12"
+          style={{
+            fontFamily: '"Courier New", monospace',
+            letterSpacing: "0.03em",
+            fontWeight: "bold",
+            whiteSpace: "pre-wrap",
+          }}
+        >
+          {gameState.message}
+        </p>
+      </RPGWindow>
+
+
+      
       <RPGWindow title="コマンド">
         <RPGButton className="w-full text-left rpg-menu-item" onClick={() => setPage("learn")}>▶ まなぶ</RPGButton>
-        <RPGButton className="w-full text-left rpg-menu-item" onClick={() => setPage("battle")}>▶ たたかう</RPGButton>
+        <RPGButton onClick={() => {
+          if (gameState.character.hp <= 0) {
+            setMessage("ＨＰが ０ なので たたかえない！ やくそうをつかおう！")
+            return
+          }
+          setPage("battle") 
+        }}
+        className="w-full text-left rpg-menu-item">
+          ▶ たたかう</RPGButton>
         <RPGButton className="w-full text-left rpg-menu-item" onClick={() => setPage("status")}>▶ ステータス</RPGButton>
         <RPGButton className="w-full text-left rpg-menu-item" onClick={() => setPage("skillboard")}>▶ スキルボード</RPGButton>
 

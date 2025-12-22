@@ -14,7 +14,7 @@ interface Question {
 }
 
 export function LearnPage() {
-  const { setPage, setMessage, gainExp } = useGame()
+  const { setPage, setMessage, gainExp, gainGold } = useGame()
 
   // Supabase から取得した問題
   const [questions, setQuestions] = useState<Question[]>([])
@@ -33,8 +33,8 @@ export function LearnPage() {
       const { data, error } = await supabase
         .from("questions")
         .select("id, statement, correct, exp, explanation")
-        //.eq("is_active", true)
-        //.order("created_at", { ascending: true }) 　//後で修正
+        .eq("is_active", true)
+        .order("created_at", { ascending: true })
         .limit(10)
 
       if (error || !data || data.length === 0) {
@@ -83,7 +83,8 @@ export function LearnPage() {
 
     if (correct) {
       gainExp(current.exp)
-      setMessage(`せいかい！${current.exp} の けいけんちを えた！`)
+      gainGold(10)  // 正解時にゴールドを10獲得
+      setMessage(`せいかい！${current.exp} の けいけんちと 10G をえた！`)
     } else {
       setMessage("ざんねん… まちがいだ。")
     }
@@ -200,3 +201,7 @@ export function LearnPage() {
     </div>
   )
 }
+function gainGold(arg0: number) {
+  throw new Error("Function not implemented.")
+}
+
