@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/lib/supabaseClient";
 import { RPGWindow, RPGButton } from "@/components/rpg-window";
 import { useGame } from "@/components/game-state";
 

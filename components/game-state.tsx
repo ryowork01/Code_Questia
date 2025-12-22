@@ -1,5 +1,6 @@
 "use client"
 
+import { set } from "date-fns"
 import type React from "react"
 import { createContext, useContext, useState, useCallback } from "react"
 
@@ -13,6 +14,7 @@ export interface Character {
   maxMp: number
   exp: number
   nextLevelExp: number
+  gold: number
   skills: Skill[]
 }
 
@@ -39,6 +41,7 @@ interface GameContextType {
   learnSkill: (skill: Skill) => void
   takeDamage: (amount: number) => void
   heal: (amount: number) => void
+  gainGold: (amount: number) => void
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined)
@@ -53,6 +56,9 @@ const defaultCharacter: Character = {
   maxMp: 10,
   exp: 0,
   nextLevelExp: 100,
+  
+  gold: 0,  // 初期所持金
+
   skills: [
     {
       id: "slash",
@@ -144,6 +150,18 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
       },
     }))
   }, [])
+  
+  
+  // 追加: 金を増やす関数
+  const gainGold = useCallback((amount: number) => {
+    setGameState((prev) => ({
+      ...prev,
+      character: {
+        ...prev.character,
+        gold: prev.character.gold + amount,
+      },
+    }))
+  }, []) 
 
   const value: GameContextType = {
     gameState,
@@ -154,7 +172,10 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     learnSkill,
     takeDamage,
     heal,
+    gainGold,  // 追加: gainGold をコンテキストに含める
   }
+
+
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>
 }

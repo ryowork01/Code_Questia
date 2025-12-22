@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { RPGWindow, RPGButton } from "@/components/rpg-window";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/lib/supabaseClient";
 
 export default function TitlePage() {
   const router = useRouter();
