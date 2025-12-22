@@ -9,6 +9,9 @@ Next.jsとsupabaseを用いたプログラミング学習ゲームです
 
 # サイトURL
 https://code-questia.vercel.app/
+ログイン→メールアドレス:example@example.com
+        パスワード:12345678
+ですぐにお試しいただけます
 
 
 # 使用技術
