@@ -1,96 +1,105 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { RPGWindow, RPGButton } from "@/components/rpg-window";
 import { supabase } from "@/lib/supabaseClient";
 import { useGame } from "@/components/game-state";
-import { useRouter } from "next/navigation";
+import { RPGWindow, RPGButton } from "@/components/rpg-window";
+
+export type ShopItem = {
+	id: string;
+	name: string;
+	description: string;
+	price: number;
+	heal_value: number | null;
+};
+
+const fetchShopItems = async (): Promise<ShopItem[]> => {
+	const { data, error } = await supabase
+		.from("shop_items")
+		.select(`
+      item:items (
+        id,
+        name,
+        description,
+        price,
+        heal_value
+      )
+    `);
+
+	if (error) {
+		console.error(error);
+		return [];
+	}
+
+	const flat = (data ?? []).flatMap((row: any) => row.item);
+	return flat as ShopItem[];
+};
 
 export default function ShopPage() {
-	const { gameState, setMessage } = useGame();
-	const router = useRouter();
-	const [shopItems, setShopItems] = useState<any[]>([]);
-	const [loading, setLoading] = useState(true);
+	const { gameState, setMessage, setCharacter } = useGame();
+	const player = gameState.character;
+	const [items, setItems] = useState<ShopItem[]>([]);
 
 	useEffect(() => {
-		const load = async () => {
-			const { data, error } = await supabase
-				.from("shop_items")
-				.select(`
-          id,
-          stock,
-          items (
-            id,
-            name,
-            description,
-            price,
-            heal_value,
-            item_type
-          )
-        `);
-
-			if (!error) setShopItems(data);
-			setLoading(false);
-		};
-
-		load();
+		fetchShopItems().then((items) => setItems(items));
 	}, []);
 
-	async function buyItem(shopItemId: string, item: any) {
-		const price = item.price;
-		const char = gameState.character;
-
-		if (char.gold < price) {
-			setMessage("ゴールドがたりない！");
+	const buyItem = async (item: ShopItem) => {
+		if (player.gold < item.price) {
+			setMessage("おかねが たりない！");
 			return;
 		}
 
-		// ゴールド減少 + 所持アイテム追加（仮実装）
-		setMessage(`${item.name} を てにいれた！`);
+		const newGold = player.gold - item.price;
 
-		// TODO: DBに保存（所持アイテム追加処理）
-	}
+		setCharacter({
+			...player,
+			gold: newGold,
+		});
+
+		await supabase
+			.from("players")
+			.update({ gold: newGold })
+			.eq("id", player.id);
+
+		const { data: existing } = await supabase
+			.from("player_items")
+			.select("*")
+			.eq("player_id", player.id)
+			.eq("item_id", item.id)
+			.maybeSingle();
+
+		if (!existing) {
+			await supabase
+				.from("player_items")
+				.insert({ player_id: player.id, item_id: item.id, quantity: 1 });
+		} else {
+			await supabase
+				.from("player_items")
+				.update({ quantity: existing.quantity + 1 })
+				.eq("id", existing.id);
+		}
+
+		setMessage(`${item.name} を １つ てにいれた！`);
+	};
 
 	return (
-		<div
-			className="min-h-screen flex items-center justify-center bg-cover bg-center p-4"
-			style={{ backgroundImage: "url('/backgrounds/home.jpg')" }}
-		>
-			<div className="max-w-md w-full">
-				<RPGWindow title="🏪 道具屋">
-					{loading && <p className="text-yellow-300">商品のじゅんびちゅう…</p>}
-
-					{!loading && (
-						<div className="space-y-3">
-							{shopItems.map((row) => (
-								<div
-									key={row.id}
-									className="p-2 bg-black/30 rounded border border-cyan-700"
-								>
-									<div className="font-bold text-cyan-300 text-lg">
-										{row.items.name}
-									</div>
-									<div className="text-cyan-100 text-sm">{row.items.description}</div>
-									<div className="text-yellow-300 text-sm">
-										🪙 {row.items.price} G
-									</div>
-
-									<RPGButton
-										className="mt-2 rpg-menu-item"
-										onClick={() => buyItem(row.id, row.items)}
-									>
-										▶ かう
-									</RPGButton>
-								</div>
-							))}
-						</div>
-					)}
-				</RPGWindow>
-
-				<RPGButton onClick={() => router.push("/home")} className="w-full mt-4">
-					▶ もどる
-				</RPGButton>
-			</div>
+		<div className="max-w-2xl mx-auto p-4">
+			<RPGWindow title="どうぐ屋">
+				<ul className="space-y-3 text-cyan-200">
+					{items.map((item) => (
+						<li key={item.id} className="flex justify-between">
+							<div>
+								<strong>{item.name}</strong>
+								<p className="text-xs">{item.description}</p>
+							</div>
+							<RPGButton onClick={() => buyItem(item)}>
+								💰 {item.price}G で買う
+							</RPGButton>
+						</li>
+					))}
+				</ul>
+			</RPGWindow>
 		</div>
 	);
 }

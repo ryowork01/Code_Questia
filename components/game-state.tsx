@@ -27,7 +27,7 @@ export interface Skill {
 
 export interface GameState {
   character: Character
-  currentPage: "home" | "learn" | "battle" | "status" | "skillboard"
+  currentPage: "home" | "learn" | "battle" | "status" | "skillboard" | "shop"
   message: string
   isAnimating: boolean
 }

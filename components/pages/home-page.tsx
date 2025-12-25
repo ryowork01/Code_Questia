@@ -161,7 +161,7 @@ export function HomePage() {
         {/* 🆕 ここを追加 */}
         <RPGButton
           className="w-full text-left rpg-menu-item"
-          onClick={() => router.push("components/pages/shop-page")}
+          onClick={() => router.push("/shop")}
         >
           ▶ どうぐ屋
         </RPGButton>
