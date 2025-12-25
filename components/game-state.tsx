@@ -1,6 +1,5 @@
 "use client"
 
-import { set } from "date-fns"
 import type React from "react"
 import { createContext, useContext, useState, useCallback } from "react"
 
@@ -16,6 +15,9 @@ export interface Character {
   nextLevelExp: number
   gold: number
   skills: Skill[]
+
+  // 🟡 所持アイテム追加
+  items?: { id: string; quantity: number }[]
 }
 
 export interface Skill {
@@ -42,6 +44,9 @@ interface GameContextType {
   takeDamage: (amount: number) => void
   heal: (amount: number) => void
   gainGold: (amount: number) => void
+
+  // 🟡 Shop 用：アイテムを増やす
+  addItem: (itemId: string) => void
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined)
@@ -56,9 +61,7 @@ const defaultCharacter: Character = {
   maxMp: 10,
   exp: 0,
   nextLevelExp: 100,
-  
-  gold: 0,  // 初期所持金
-
+  gold: 0,
   skills: [
     {
       id: "slash",
@@ -67,6 +70,7 @@ const defaultCharacter: Character = {
       mpCost: 0,
     },
   ],
+  items: [], // 🟡 初期値追加
 }
 
 export function GameProvider({ children }: { children: React.ReactNode }) {
@@ -119,7 +123,6 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     setGameState((prev) => {
       const hasSkill = prev.character.skills.some((s) => s.id === skill.id)
       if (hasSkill) return prev
-
       return {
         ...prev,
         character: {
@@ -150,9 +153,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
       },
     }))
   }, [])
-  
-  
-  // 追加: 金を増やす関数
+
   const gainGold = useCallback((amount: number) => {
     setGameState((prev) => ({
       ...prev,
@@ -161,7 +162,32 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
         gold: prev.character.gold + amount,
       },
     }))
-  }, []) 
+  }, [])
+
+  // 🟡 所持アイテム追加処理
+  const addItem = useCallback((itemId: string) => {
+    setGameState((prev) => {
+      const exists = prev.character.items?.find((x) => x.id === itemId)
+      if (exists) {
+        return {
+          ...prev,
+          character: {
+            ...prev.character,
+            items: prev.character.items!.map((it) =>
+              it.id === itemId ? { ...it, quantity: it.quantity + 1 } : it
+            ),
+          },
+        }
+      }
+      return {
+        ...prev,
+        character: {
+          ...prev.character,
+          items: [...(prev.character.items ?? []), { id: itemId, quantity: 1 }],
+        },
+      }
+    })
+  }, [])
 
   const value: GameContextType = {
     gameState,
@@ -172,18 +198,17 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     learnSkill,
     takeDamage,
     heal,
-    gainGold,  // 追加: gainGold をコンテキストに含める
+    gainGold,
+    addItem, // 🟡 追加
   }
-
-
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>
 }
 
 export function useGame() {
   const context = useContext(GameContext)
-  if (!context) {
-    throw new Error("useGame must be used within GameProvider")
-  }
+  if (!context) throw new Error("useGame must be used within GameProvider")
   return context
 }
+
+

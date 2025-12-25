@@ -136,13 +136,14 @@ export function HomePage() {
   // UI（背景＋透過）
   // =====================
   return (
-    <div
-      className="min-h-screen flex bg-cover bg-center bg-fixed "
-      style={{ backgroundImage: "url(/backgrounds/home.jpg)" }}
-    >
-      {/* 画面全体の暗幕（背景を活かす） */}
-      <div className="min-h-screen bg-black/60 w-full justify-center p-4">
-        
+    <>
+      <div
+        className="min-h-screen flex bg-cover bg-center bg-fixed "
+        style={{ backgroundImage: "url(/backgrounds/home.jpg)" }}
+      >
+        {/* 暗幕 */}
+        <div className="min-h-screen bg-black/60 w-full justify-center p-4">
+
           <div className="text-center mb-1">
             <h1 className="text-3xl text-cyan-300 mb-2 retro-title">
               ＲＰＧがくしゅうアプリ
@@ -153,7 +154,7 @@ export function HomePage() {
           </div>
 
           <RPGWindow title={gameState.character.name}>
-          <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4">
               <div>
                 <RPGBar label="ＨＰ" current={gameState.character.hp} max={gameState.character.maxHp} />
                 <RPGBar label="ＭＰ" current={gameState.character.mp} max={gameState.character.maxMp} />
@@ -168,15 +169,7 @@ export function HomePage() {
           </RPGWindow>
 
           <RPGWindow title="メッセージ">
-            <p
-              className="text-sm text-yellow-300 min-h-12"
-              style={{
-                fontFamily: '"Courier New", monospace',
-                letterSpacing: "0.03em",
-                fontWeight: "bold",
-                whiteSpace: "pre-wrap",
-              }}
-            >
+            <p className="text-sm text-yellow-300 min-h-12">
               {gameState.message}
             </p>
           </RPGWindow>
@@ -207,6 +200,11 @@ export function HomePage() {
               ▶ スキルボード
             </RPGButton>
 
+            {/* 🆕 ここ追加 */}
+            <RPGButton className="w-full text-left rpg-menu-item" onClick={() => router.push("/shop")}>
+              ▶ どうぐ屋
+            </RPGButton>
+
             {isGuest && (
               <RPGButton onClick={() => router.push("/upgrade")}>
                 ▶ 本登録する
@@ -216,30 +214,8 @@ export function HomePage() {
             <LogoutButton />
           </RPGWindow>
         </div>
-      </RPGWindow>
-
-      <RPGWindow title="コマンド">
-        <RPGButton className="w-full text-left rpg-menu-item" onClick={() => setPage("learn")}>▶ まなぶ</RPGButton>
-        <RPGButton className="w-full text-left rpg-menu-item" onClick={() => setPage("battle")}>▶ たたかう</RPGButton>
-        <RPGButton className="w-full text-left rpg-menu-item" onClick={() => setPage("status")}>▶ ステータス</RPGButton>
-        <RPGButton className="w-full text-left rpg-menu-item" onClick={() => setPage("skillboard")}>▶ スキルボード</RPGButton>
-
-        {/* 🆕 ここを追加 */}
-        <RPGButton
-          className="w-full text-left rpg-menu-item"
-          onClick={() => router.push("/shop")}
-        >
-          ▶ どうぐ屋
-        </RPGButton>
-
-        {isGuest && (
-          <RPGButton onClick={() => router.push("/upgrade")}>
-            ▶ 本登録する
-          </RPGButton>
-        )}
-
-        <LogoutButton />
-      </RPGWindow>
-    </div>
+      </div>
+    </>
   )
 }
+  
