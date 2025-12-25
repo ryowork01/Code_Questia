@@ -60,9 +60,6 @@ export function HomePage() {
     return () => subscription.unsubscribe()
   }, [])
 
-  // =====================
-  // Player セットアップ
-  // =====================
   useEffect(() => {
     if (!authChecked) return
     if (setupDoneRef.current) return
@@ -119,17 +116,12 @@ export function HomePage() {
     setupPlayer()
   }, [authChecked, user, setCharacter, setMessage])
 
-  // =====================
-  // ページ切り替え
-  // =====================
+
   if (gameState.currentPage === "learn") return <LearnPage />
   if (gameState.currentPage === "battle") return <BattlePage />
   if (gameState.currentPage === "status") return <StatusPage />
   if (gameState.currentPage === "skillboard") return <SkillBoardPage />
 
-  // =====================
-  // Loading
-  // =====================
   if (!authChecked || !playerLoaded) {
     return (
       <div className="flex items-center justify-center min-h-screen text-cyan-300">
@@ -224,7 +216,30 @@ export function HomePage() {
             <LogoutButton />
           </RPGWindow>
         </div>
-      </div>
+      </RPGWindow>
 
-  ) 
+      <RPGWindow title="コマンド">
+        <RPGButton className="w-full text-left rpg-menu-item" onClick={() => setPage("learn")}>▶ まなぶ</RPGButton>
+        <RPGButton className="w-full text-left rpg-menu-item" onClick={() => setPage("battle")}>▶ たたかう</RPGButton>
+        <RPGButton className="w-full text-left rpg-menu-item" onClick={() => setPage("status")}>▶ ステータス</RPGButton>
+        <RPGButton className="w-full text-left rpg-menu-item" onClick={() => setPage("skillboard")}>▶ スキルボード</RPGButton>
+
+        {/* 🆕 ここを追加 */}
+        <RPGButton
+          className="w-full text-left rpg-menu-item"
+          onClick={() => router.push("/shop")}
+        >
+          ▶ どうぐ屋
+        </RPGButton>
+
+        {isGuest && (
+          <RPGButton onClick={() => router.push("/upgrade")}>
+            ▶ 本登録する
+          </RPGButton>
+        )}
+
+        <LogoutButton />
+      </RPGWindow>
+    </div>
+  )
 }
