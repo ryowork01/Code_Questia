@@ -45,7 +45,7 @@ export default function ShopPage() {
 
 
 	
-	// ▼ 購入処理
+	// 購入処理
 	const buyItem = async (item: ShopItem) => {
 		if (gameState.character.gold < item.price) {
 			setMessage("おかねが たりない！");

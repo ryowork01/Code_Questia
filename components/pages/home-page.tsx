@@ -136,9 +136,7 @@ export function HomePage() {
 
   const isGuest = user?.is_anonymous === true
 
-  // =====================
-  // UI（背景＋透過）
-  // =====================
+  // UI（背景＋透過処理込み）
   return (
     <>
       <div

@@ -13,12 +13,15 @@ interface Enemy {
   image: string
 }
 
+{/* 敵データ */}
 const ENEMIES: Enemy[] = [
   { name: "スライム", hp: 15, maxHp: 15, attack: 3, defense: 1, image: "/enemies/enemy_slime.png" },
-  //{ name: "オーク", hp: 25, maxHp: 25, attack: 5, defense: 2 },
-  //{ name: "ドラゴン", hp: 50, maxHp: 50, attack: 8, defense: 4 },
+  //{ name: "オーク", hp: 25, maxHp: 25, attack: 5, defense: 2 }, 後で追加
+  //{ name: "ドラゴン", hp: 50, maxHp: 50, attack: 8, defense: 4 }, 後で追加
 ]
 
+
+{/* 戦闘処理 */}
 export function BattlePage() {
   const { gameState, setPage, setMessage, gainExp, takeDamage } = useGame()
   const [enemy, setEnemy] = useState<Enemy>(ENEMIES[0])
