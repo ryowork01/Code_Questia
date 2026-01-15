@@ -6,13 +6,24 @@ import { RPGWindow, RPGBar, RPGButton } from "@/components/rpg-window"
 import { LearnPage } from "./learn-page"
 import { BattlePage } from "./battle-page"
 import { StatusPage } from "./status-page"
-import SkillBoardPage from "@/components/pages/skillboard-page"
 import { supabase } from "@/lib/supabaseClient"
 import { useRouter } from "next/navigation"
+import { BGMControl } from "@/components/BGMControl"
 
-// =====================
+
+//ライセンス表記ページリンク
+export function CreditsLink() {
+  const router = useRouter()
+
+  return (
+    <RPGButton className="w-full text-left rpg-menu-item" onClick={() => router.push("/credits")}>
+      ▶ ライセンス
+    </RPGButton>
+  )
+}
+
+
 // ログアウトボタン
-// =====================
 export function LogoutButton() {
   const router = useRouter()
 
@@ -124,7 +135,7 @@ export function HomePage() {
   if (gameState.currentPage === "learn") return <LearnPage />
   if (gameState.currentPage === "battle") return <BattlePage />
   if (gameState.currentPage === "status") return <StatusPage />
-  if (gameState.currentPage === "skillboard") return <SkillBoardPage />
+  
 
   if (!authChecked || !playerLoaded) {
     return (
@@ -147,11 +158,18 @@ export function HomePage() {
         <div className="min-h-screen bg-black/60 w-full justify-center p-4">
 
           <div className="text-center mb-1">
-            <h1 className="text-3xl text-cyan-300 mb-2 retro-title">
-              ＲＰＧがくしゅうアプリ
+            <h1 className="text-4xl text-cyan-300 mb-2 text-left retro-title font-serif">
+              Code Questia
             </h1>
-            <p className="text-cyan-400 text-xs">
-              ▼ しれんに たちむかおう ▼
+
+            {/* BGM表示 */}
+            <div className="flex justify-start mb-1">
+              <BGMControl />
+            </div>
+
+
+            <p className="text-cyan-400 text-left text-xs">
+              ▼ 学んで冒険しよう ▼
             </p>
           </div>
 
@@ -171,12 +189,14 @@ export function HomePage() {
           </RPGWindow>
 
           <RPGWindow title="メッセージ">
-            <p className="text-sm text-yellow-300 min-h-12">
+            <p className="text-sm text-cyan-200 min-h-12">
               {gameState.message}
             </p>
           </RPGWindow>
 
           <RPGWindow title="コマンド">
+            <div className="grid grid-cols-2 gap-2">
+            
             <RPGButton className="w-full text-left rpg-menu-item" onClick={() => setPage("learn")}>
               ▶ まなぶ
             </RPGButton>
@@ -198,10 +218,6 @@ export function HomePage() {
               ▶ ステータス
             </RPGButton>
 
-            <RPGButton className="w-full text-left rpg-menu-item" onClick={() => setPage("skillboard")}>
-              ▶ スキルボード
-            </RPGButton>
-
             <RPGButton className="w-full text-left rpg-menu-item" onClick={() => router.push("/shop")}>
               ▶ どうぐ屋
             </RPGButton>
@@ -212,7 +228,10 @@ export function HomePage() {
               </RPGButton>
             )}
 
+            <CreditsLink />
+
             <LogoutButton />
+            </div>
           </RPGWindow>
         </div>
       </div>

@@ -131,7 +131,7 @@ export function BattlePage() {
       <div className="w-full max-w-md mb-6">
         {battleActive ? (
           <RPGWindow title="コマンド">
-            <div className="space-y-2">
+            <div className="grid grid-cols-2 gap-2">
               <RPGButton onClick={handleAttack} className="w-full text-left rpg-menu-item">
                 ▶ こうげき
               </RPGButton>
