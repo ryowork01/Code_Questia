@@ -1,3 +1,4 @@
+//音量調整とミュート切り替えボタン
 "use client"
 
 import { useBGM } from "@/components/bgm-context"
