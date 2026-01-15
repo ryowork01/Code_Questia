@@ -7,6 +7,7 @@ export type BGMContextType = {
 	setVolume: (v: number) => void
 	muted: boolean
 	toggleMute: () => void
+	play: () => void
 }
 
 const BGMContext = createContext<BGMContextType | null>(null)
@@ -40,13 +41,14 @@ export function BGMProvider({ children }: { children: React.ReactNode }) {
 	}
 
 	return (
-		<BGMContext.Provider value={{ volume, setVolume, muted, toggleMute }}>
+		<BGMContext.Provider 
+		value={{ volume, setVolume, muted, toggleMute, play }}>
 			{children}
 		</BGMContext.Provider>
 	)
 }
 
-/** ← これは「フック」 */
+/** 「フック」 */
 export function useBGM() {
 	const ctx = useContext(BGMContext)
 	if (!ctx) throw new Error("useBGM must be used within BGMProvider")
