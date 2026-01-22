@@ -41,8 +41,7 @@ https://code-questia.vercel.app/
 
 
 # アプリの改善案
-[アプリ改善案　Googleスプレッドシート]
-(https://docs.google.com/spreadsheets/d/1pe0OOuZhIB4Kbtdo-nm0WY5a7eB-qSHnLSKevzyQUCQ/edit?usp=sharing)
+[アプリ改善案　Googleスプレッドシート](https://docs.google.com/spreadsheets/d/1pe0OOuZhIB4Kbtdo-nm0WY5a7eB-qSHnLSKevzyQUCQ/edit?usp=sharing)
 
 # 備考
 
